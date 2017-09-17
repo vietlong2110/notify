@@ -6,21 +6,26 @@ const config = require('./mongoosastic');
 const Articles = new Schema({
   link: {
     type: String,
-    es_indexed: true
+    es_indexed: true,
+    required: true,
+    unique: true
   },
   title: {
     type: String,
     es_indexed: true,
-    es_analyzer: 'vi_analyzer'
+    es_analyzer: 'vi_analyzer',
+    required: true
   },
   description: {
     type: String,
     es_indexed: true,
-    es_analyzer: 'vi_analyzer'
+    es_analyzer: 'vi_analyzer',
+    required: true
   },
   image: {
     type: String,
-    es_indexed: true
+    es_indexed: true,
+    required: true
   },
   tags: [{
     type: String,
@@ -33,7 +38,8 @@ const Articles = new Schema({
   },
   source: {
     type: String,
-    es_indexed: true
+    es_indexed: true,
+    required: true
   },
   videos: [{
     type: String,
@@ -46,7 +52,8 @@ const Articles = new Schema({
   publishedDate: {
     type: Date,
     default: Date.now,
-    es_indexed: true
+    es_indexed: true,
+    required: true
   }
 });
 

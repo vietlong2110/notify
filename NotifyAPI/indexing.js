@@ -34,5 +34,5 @@ const indexNews = async() => {
   setTimeout(indexNews, 60 * 60 * 1000);
 };
 
-// indexNews();
-reIndex();
+indexNews();
+// reIndex();
