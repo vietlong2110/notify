@@ -1,10 +1,20 @@
+/*******************************************************************************
+*                 CONTROLLER FUNCTIONS RELATING TO SEARCH                      *
+*******************************************************************************/
+
 const elastic = require('elasticsearch');
 const client = new elastic.Client({
   host: 'localhost:9200'
 });
 
-const DEFAULT_SIZE = 20;
+const DEFAULT_SIZE = 20; //return 20 articles by default
 
+/**
+* Get articles by keyword query
+* @param {String} query
+* @param {Number} size - number of returning articles
+* @return {Promise<Array>}
+*/
 const searchArticles = async(query, size = DEFAULT_SIZE) => {
   let links = [];
 

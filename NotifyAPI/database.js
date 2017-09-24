@@ -1,3 +1,7 @@
+/*******************************************************************************
+*         SETUP FOR MONGODB AND ELASTICSEARCH (CONNECT BY MONGOOSASTIC)        *
+*******************************************************************************/
+
 const mongoose = require('mongoose');
 
 const { Feeds, Sources, Articles } = require('./models');
@@ -5,6 +9,7 @@ const { Feeds, Sources, Articles } = require('./models');
 let hostname = process.env.NODE_ENV === 'production' ||
   process.env.NODE_ENV === 'development' ? 'mongo': 'localhost';
 
+//connect to mongodb
 let readyState = mongoose.connection.readyState;
 if (readyState !== 1 || readyState !== 2)
   mongoose.connect(`mongodb://${hostname}/notify`, { useMongoClient: true });
@@ -13,6 +18,7 @@ let feeds = mongoose.model('Feed', Feeds);
 let sources = mongoose.model('Source', Sources);
 
 let articles = mongoose.model('Articles', Articles);
+//mapping types of articles index in elasticsearch
 articles.createMapping({
   "settings": {
     "number_of_shards": 1,

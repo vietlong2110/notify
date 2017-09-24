@@ -1,3 +1,7 @@
+/*******************************************************************************
+*                         DON'T CARE ABOUT THIS FILE                           *
+*******************************************************************************/
+
 const mongoose = require('mongoose');
 // const mongoosastic = require('mongoosastic');
 const Schema = mongoose.Schema;

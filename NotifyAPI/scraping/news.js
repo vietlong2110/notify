@@ -9,14 +9,14 @@ const RSS = 'http://feeds.bbci.co.uk/vietnamese/rss.xml';
 const DEFAULT_LANG = 'vi';
 const DEFAULT_TIMEOUT = 10000;
 
-const fetchFeed = async(rss = RSS) => {
-  const today = (date, timezone = 7) => {
-    let now = new Date();
-    now.setUTCHours(now.getUTCHours());
-    date = new Date(date);
-    return ((now - date) / 1000 / 3600 <= 24);
-  };
+const today = (date, timezone = 7) => {
+  let now = new Date();
+  now.setUTCHours(now.getUTCHours());
+  date = new Date(date);
+  return ((now - date) / 1000 / 3600 <= 24);
+};
 
+const fetchFeed = async(rss = RSS) => {
   try {
     let feed = await feedparser.parse(rss);
     feed = feed.entries;

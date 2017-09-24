@@ -1,9 +1,18 @@
+/*******************************************************************************
+*                 CONTROLLER FUNCTIONS RELATING TO FACEBOOK                    *
+*******************************************************************************/
+
 const FB = require('fb');
 const fb = new FB.Facebook({version: 'v2.9'});
 
 const LIMIT = '100';
+//temporary access token
 const ACCESS_TOKEN = 'EAAM98EFnHGMBAJK4jSxhzpB75Gx8Nlt64PiBAaVc3e42EN6clNcPUMwANHVVlZCfva8lYZB3fnZCUuE34U6CHabjx8beCwi1x8DA5nz6GQz5hkacZBzROQVDXxC9qmpZA0rzNo9wWOuM1lGpJ4YoVXvC9NkhoZBJr5ZAFUg6i6suRlFfjLVmYxZCPLiD5vHzZB2vlm0AvSXHXggZDZD';
 
+/**
+* Filter data with only celebs' pages
+* @return {Array} - Filtered data
+*/
 const filterData = data => {
   const NEWS_MEDIA_CATEGORIES = [
     'Media/News Company', 'News & Media Website', 'Magazine', 'Newspaper',
@@ -44,6 +53,10 @@ const filterData = data => {
   return res;
 };
 
+/**
+* Get user_likes fb pages
+* @return {Promise<Array>}
+*/
 const getUserLikePages = async(access_token = ACCESS_TOKEN) => {
   try {
     let response = await fb.api('me/likes', {

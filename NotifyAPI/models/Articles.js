@@ -1,5 +1,9 @@
+/*******************************************************************************
+*                           ARTICLES DATABASE SCHEMA                           *
+*******************************************************************************/
+
 const mongoose = require('mongoose');
-const mongoosastic = require('bluebird').promisifyAll(require('mongoosastic'));
+const mongoosastic = require('mongoosastic');
 const Schema = mongoose.Schema;
 const config = require('./mongoosastic');
 

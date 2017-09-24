@@ -1,4 +1,7 @@
-// index file
+/*******************************************************************************
+*           INDEXING EVERY ARTICLES OF THE APP HERE (NEWS OR SOCIAL)           *
+*******************************************************************************/
+
 const { fetchNews } = require('./scraping/news');
 const { Sources } = require('./database');
 

@@ -1,3 +1,5 @@
+//rss crawler from seeds/vi-sources.txt and saved them to sources collections in db
+
 const Promise = require('bluebird');
 const fs = Promise.promisifyAll(require('fs'));
 const u = require('url');
@@ -64,13 +66,13 @@ const crawl = () => {
     for (i in rssArray) {
       let rss = rssArray[i].split(' ');
       let source = rss[0], feed = rss[1] || null;
-			try {
-				let savedFeed = await Sources.findOne({ source }).exec();
-				if (savedFeed)
-					continue;
-			} catch(err) {
-				console.log(err);
-			}
+			// try {
+			// 	let savedFeed = await Sources.findOne({ source }).exec();
+			// 	if (savedFeed)
+			// 		continue;
+			// } catch(err) {
+			// 	console.log(err);
+			// }
 			let urls = [];
 
 			if (feed) {
