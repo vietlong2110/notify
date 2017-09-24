@@ -8,10 +8,10 @@ Elasticsearch version: v5.4.1 <br />
 Elasticsearch vietnamese analysis version: v5.4.1 (https://github.com/duydo/elasticsearch-analysis-vietnamese)
 
 ## Usage
-file/to/elastic/folder/bin/elasticsearch <br />
+[file/to/elastic/folder/]bin/elasticsearch <br />
 yarn global add pm2 (npm install -g pm2) <br />
 cd NotifyAPI <br />
-yarn/npm install <br />
+yarn(npm) install <br />
 node scripts/rssCrawler.js <br />
 pm2 start indexing.js
 
