@@ -2,9 +2,9 @@
 Notification app from all reliable sources with subscribed topic from other social network
 
 ## Requirement
-Node version: v8.1+
-Mongo version: v3.4+
-Elasticsearch version: v5.4.1
+Node version: v8.1+ <br />
+Mongo version: v3.4+ <br />
+Elasticsearch version: v5.4.1 <br />
 Elasticsearch vietnamese analysis version: v5.4.1 (https://github.com/duydo/elasticsearch-analysis-vietnamese)
 
 ## Usage
