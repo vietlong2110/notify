@@ -15,7 +15,7 @@ let sources = mongoose.model('Source', Sources);
 let articles = mongoose.model('Articles', Articles);
 articles.createMapping({
   "settings": {
-    // "number_of_shards": 1,
+    "number_of_shards": 1,
     "analysis": {
       // "filter": {
       //   "shingles_filter": {

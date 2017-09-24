@@ -2,7 +2,7 @@
 Notification app from all reliable sources with subscribed topic from other social network
 
 ## Usage
-Run cd NotifyAPI \n
-Run file/to/elastic/folder/bin/elasticsearch \n
-Run node scripts/rssCrawler.js \n
-Run pm2 start indexing.js \n
+Run cd NotifyAPI <br />
+Run file/to/elastic/folder/bin/elasticsearch <br />
+Run node scripts/rssCrawler.js <br />
+Run pm2 start indexing.js

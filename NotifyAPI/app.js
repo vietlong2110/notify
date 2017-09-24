@@ -17,8 +17,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-// const api = require('./api/api');
-// app.use('/', api);
+const api = require('./api/api');
+app.use('/', api);
 
 const tests = require('./api/tests');
 app.use('/test', tests);

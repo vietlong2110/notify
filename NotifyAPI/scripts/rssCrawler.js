@@ -64,6 +64,13 @@ const crawl = () => {
     for (i in rssArray) {
       let rss = rssArray[i].split(' ');
       let source = rss[0], feed = rss[1] || null;
+			try {
+				let savedFeed = await Sources.findOne({ source }).exec();
+				if (savedFeed)
+					continue;
+			} catch(err) {
+				console.log(err);
+			}
 			let urls = [];
 
 			if (feed) {
@@ -87,7 +94,7 @@ const crawl = () => {
 			}
 			let links = [];
 
-			for (j in urls) {
+			for (j = 0; j < urls.length; j++) {
 				try {
 					let data = await fetchFeed(urls[j]);
 					links = links.concat(urls[j]);

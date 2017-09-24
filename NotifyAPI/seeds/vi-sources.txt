@@ -49,3 +49,5 @@ gamek.vn http://gamek.vn/rss.chn
 lienminh360.vn
 tinhte.vn
 vozforums.com
+ngoisao.net https://ngoisao.net/rss
+eva.vn http://eva.vn/guest/RSS/

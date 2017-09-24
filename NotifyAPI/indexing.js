@@ -1,13 +1,8 @@
+// index file
 const { fetchNews } = require('./scraping/news');
-// const { Sources } = require('./database');
+const { Sources } = require('./database');
 
 let cache = [];
-
-const reIndex = () => {
-  const { Sources } = require('./database');
-  console.log('Reindexing...');
-  setTimeout(reIndex, 60 * 1000);
-};
 
 const indexNews = async() => {
   while (1) {
@@ -31,8 +26,6 @@ const indexNews = async() => {
       cache.shift();
     }
   }
-  setTimeout(indexNews, 60 * 60 * 1000);
 };
 
 indexNews();
-// reIndex();

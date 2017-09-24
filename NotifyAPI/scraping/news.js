@@ -66,7 +66,7 @@ const saveArticle = async(data, language = DEFAULT_LANG) => {
     console.log('Indexed ' + link);
     return Promise.resolve();
   } catch(err) {
-    console.log('ERROR OCCURED when INDEXING' + link);
+    console.log('ERROR OCCURED when INDEXING ' + link);
     return Promise.reject(err);
   }
 };
