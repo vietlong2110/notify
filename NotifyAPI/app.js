@@ -5,12 +5,17 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
 //parser body
 app.use(
   bodyParser.urlencoded({ extended: true })
 );
 app.use(bodyParser.json());
+
+//Intialize with auth token
+passport.use(require('./controllers/auth'));
+app.use(passport.initialize());
 
 //prevent CORF
 app.use(function(req, res, next) {
@@ -23,8 +28,11 @@ app.use(function(req, res, next) {
   next();
 });
 
-// const api = require('./api/api'); //include api router file
-// app.use('/', api);
+// const auth = require('./api/auth');
+// app.use('/auth', auth);
+
+const api = require('./api/api')(passport); //include api router file
+app.use('/', api);
 
 const tests = require('./api/tests'); //include testing api router file
 app.use('/test', tests);

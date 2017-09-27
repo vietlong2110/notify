@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 
-const { Feeds, Sources, Articles } = require('./models');
+const { Feeds, Sources, Articles, Users } = require('./models');
 
 let hostname = process.env.NODE_ENV === 'production' ||
   process.env.NODE_ENV === 'development' ? 'mongo': 'localhost';
@@ -16,6 +16,7 @@ if (readyState !== 1 || readyState !== 2)
 
 let feeds = mongoose.model('Feed', Feeds);
 let sources = mongoose.model('Source', Sources);
+let users = mongoose.model('User', Users);
 
 let articles = mongoose.model('Articles', Articles);
 //mapping types of articles index in elasticsearch
@@ -127,5 +128,6 @@ articles.synchronize();
 module.exports = {
   Feeds: feeds,
   Sources: sources,
-  Articles: articles
+  Articles: articles,
+  Users: users
 };

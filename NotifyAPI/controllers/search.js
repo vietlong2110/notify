@@ -16,7 +16,7 @@ const DEFAULT_SIZE = 20; //return 20 articles by default
 * @return {Promise<Array>}
 */
 const searchArticles = async(query, size = DEFAULT_SIZE) => {
-  let links = [];
+  let articleList = [];
 
   // if (query.match(/^[.\p{L}]*$/i)) {
     try {
@@ -35,10 +35,18 @@ const searchArticles = async(query, size = DEFAULT_SIZE) => {
           }
         }
       });
-      for (i in results.hits.hits)
-        links = links.concat(results.hits.hits[i]._source.link);
-      console.log(links);
-      return Promise.resolve(links);
+      for (i in results.hits.hits) {
+        //results.hits.hits[i]._source.link;
+        var article = {
+          link: results.hits.hits[i]._source.link,
+          title: results.hits.hits[i]._source.title,
+          image: results.hits.hits[i]._source.image,
+          source: results.hits.hits[i]._source.source,
+        }
+        articleList = articleList.concat(article);
+      }
+      // console.log(articleList);
+      return Promise.resolve(articleList);
     } catch(err) {
       return Promise.reject(err);
     }

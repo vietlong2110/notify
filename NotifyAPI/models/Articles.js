@@ -5,7 +5,7 @@
 const mongoose = require('mongoose');
 const mongoosastic = require('mongoosastic');
 const Schema = mongoose.Schema;
-const config = require('./mongoosastic');
+const config = require('../config');
 
 const Articles = new Schema({
   link: {

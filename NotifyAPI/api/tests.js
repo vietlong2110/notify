@@ -24,8 +24,4 @@ router.get('/fblikes', async(req, res) => {
   }
 });
 
-router.get('/searchrss', async(req, res) => {
-
-});
-
 module.exports = router;
