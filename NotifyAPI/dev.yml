@@ -2,7 +2,7 @@ version: '2'
 
 services:
   notify:
-    image: docker.io/vietlong2110/notify
+    build: .
     environment:
       NODE_ENV: development
     links:
