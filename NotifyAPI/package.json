@@ -4,6 +4,14 @@
   "description": "notification app",
   "main": "app.js",
   "scripts": {
+    "start:mongo": "docker-compose -f dev.yml start mongo",
+    "stop:mongo": "docker-compose -f dev.yml stop mongo",
+    "start:elastic": "docker-compose -f dev.yml start elasticsearch",
+    "stop:elastic": "docker-compose -f dev.yml stop elasticsearch",
+    "start": "pm2-docker start app.js",
+    "start:index": "pm2-docker start indexing.js",
+    "log:elastic": "docker-compose -f dev.yml logs -f elastic",
+    "log:notify": "docker-compose -f dev.yml logs -f notify",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
