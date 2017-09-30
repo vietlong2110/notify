@@ -13,7 +13,7 @@ const Users = new Schema({
     profile_picture: String,
     //roles: Array,
     locales: String,
-    keyword_searched: [String],
+    keyword_list: [String],
     //categories_liked: Array,
     user_liked: [{
       id: String,
