@@ -36,7 +36,6 @@ vtc.vn http://vtc.vn/main-rss.html
 tinnhanhchungkhoan.vn
 tienphong.vn http://www.tienphong.vn/rss.tpo
 nguoitieudung.com.vn http://www.nguoitieudung.com.vn/main-rss.html
-nguoiduatin.vn http://www.nguoiduatin.vn/rss.html
 toquoc.vn http://toquoc.vn/rss.html
 baomoi.com
 tuoitre.vn http://tuoitre.vn/rss.htm

@@ -9,4 +9,4 @@ WORKDIR /usr/src/app
 COPY . /usr/src/app
 EXPOSE 8080
 
-CMD ["pm2-docker", "indexing.js"]
+CMD ["pm2-docker", "process.yml"]
