@@ -95,5 +95,34 @@ module.exports = passport => {
     });
 
 
+    router.get('/getlist',isAuthorized, async(req,res)=>{
+       try {
+           let listKeyword = req.user.keyword_list;
+           res.json({
+               success: true,
+               payload: listKeyword
+           });
+       }catch (error){
+           res.status(400).json({
+               success: false,
+               err: error
+           })
+       }
+    });
+
+    router.get('/newfeed',isAuthorized, async(req,res)=>{
+        try {
+            let newfeed = await Controllers.user.notifyList(req.user);
+            res.json({
+                success: true,
+                payload: newfeed
+            });
+        }catch (error){
+            res.status(400).json({
+                success: false,
+                err: error
+            })
+        }
+    });
     return router;
 };

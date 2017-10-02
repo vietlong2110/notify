@@ -36,11 +36,10 @@ const searchArticles = async (query, size = DEFAULT_SIZE) => {
         });
 
 
-        for (i in results.hits.hits) {
+        for (let i=0; i< results.hits.hits.length;i++) {
             //results.hits.hits[i]._source.link;
             var article = {
-
-                link: results.hits.hits[i]._source.link,
+                _id: results.hits.hits[i]._id,
                 title: results.hits.hits[i]._source.title,
                 image: results.hits.hits[i]._source.image,
                 source: results.hits.hits[i]._source.source,

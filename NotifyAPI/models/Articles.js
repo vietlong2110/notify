@@ -59,6 +59,7 @@ const Articles = new Schema({
     es_indexed: true,
     required: true
   }
+
 });
 
 Articles.plugin(mongoosastic, config.articles);
