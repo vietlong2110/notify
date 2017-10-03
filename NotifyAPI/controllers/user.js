@@ -26,6 +26,7 @@ const followKeyword = async (user, keyword) => {
 
         let index = user.keyword_list.indexOf(keyword);
         if (index === -1) {
+
             user.keyword_list.push(keyword);
             user.save();
             return Promise.resolve("follow complete");
@@ -37,18 +38,23 @@ const followKeyword = async (user, keyword) => {
 };
 
 
-const connectArticleFromUser = async (arrayList) => {
+const connectArticleFromUser = async (user) => {
 
     try {
 
-        var articles = [];
-        for (let i = 0; i < arrayList.length; i++) {
-            let result = await  Models.Articles.findById(arrayList[i])
-                .select({"_id": 1, "title": 1, "image": 1, "description": 1, "source": 1, "publishedDate": 1})
-                .exec();
-            articles.push(result);
-        }
-        return Promise.resolve(articles);
+        let result = await Models.Users.findById(user._id).populate({
+            path: 'notify_list',
+            select: ({"_id": 1, "title": 1, "image": 1, "description": 1, "source": 1, "publishedDate": 1}),
+            sort: ({
+                publishedDate: -1
+            })
+
+        }).exec();
+        let notify_list= result.notify_list;
+        notify_list.sort(function (a, b) {
+            return b.publishedDate- a.publishedDate;
+        })
+        return Promise.resolve(result);
     } catch (err) {
         return Promise.reject(err);
     }
@@ -74,7 +80,7 @@ const notifyList = async (user) => {
             }
             await user.save();
         }
-        let articles = await connectArticleFromUser(user.notify_list);
+        let articles = await connectArticleFromUser(user);
 
         return Promise.resolve(articles);
     } catch (err) {
@@ -87,4 +93,5 @@ module.exports = {
     unfollowKeyword,
     followKeyword,
     notifyList
+
 };

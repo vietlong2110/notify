@@ -115,7 +115,7 @@ module.exports = passport => {
             let newfeed = await Controllers.user.notifyList(req.user);
             res.json({
                 success: true,
-                payload: newfeed
+                payload: newfeed.notify_list
             });
         }catch (error){
             res.status(400).json({
