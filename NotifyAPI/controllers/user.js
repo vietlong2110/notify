@@ -45,15 +45,14 @@ const connectArticleFromUser = async (user) => {
         let result = await Models.Users.findById(user._id).populate({
             path: 'notify_list',
             select: ({"_id": 1, "title": 1, "image": 1, "description": 1, "source": 1, "publishedDate": 1}),
-            sort: ({
-                publishedDate: -1
-            })
 
+        }).sort({
+            publishedDate: -1
         }).exec();
         let notify_list= result.notify_list;
         notify_list.sort(function (a, b) {
             return b.publishedDate- a.publishedDate;
-        })
+        });
         return Promise.resolve(result);
     } catch (err) {
         return Promise.reject(err);
