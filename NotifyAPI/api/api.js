@@ -115,7 +115,7 @@ module.exports = passport => {
             let newfeed = await Controllers.user.notifyList(req.user);
             res.json({
                 success: true,
-                payload: newfeed.notify_list
+                payload: newfeed
             });
         }catch (error){
             res.status(400).json({
@@ -124,5 +124,61 @@ module.exports = passport => {
             })
         }
     });
+
+
+    router.post('/save',isAuthorized, async(req,res)=>{
+        try{
+            let message = await Controllers.user.saveArticles(req.user,req.query._id);
+            res.json({
+                success: true,
+                payload: message
+            });
+        }catch (error){
+            res.status(400).json({
+                success: false,
+                err: error
+            });
+        }
+
+
+    });
+
+
+    router.post('/unsave',isAuthorized, async(req,res)=>{
+        try{
+            let message = await Controllers.user.unsaveArticles(req.user,req.query._id);
+            res.json({
+                success: true,
+                payload: message
+            });
+        }catch (error){
+            res.status(400).json({
+                success: false,
+                err: error
+            });
+        }
+
+
+    });
+
+
+    router.get('/saved-articles',isAuthorized,async(req,res)=>{
+        try{
+            let result = await Controllers.user.getSavedArticles(req.user);
+            res.json({
+                success: true,
+                payload: result
+            });
+        }catch (error){
+            res.status(400).json({
+                success: false,
+                err: error
+            });
+        }
+    });
+
+
     return router;
+
+
 };
