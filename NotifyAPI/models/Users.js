@@ -20,7 +20,10 @@ const Users = new Schema({
       name: String,
       website: String,
       category: String
-    }]
+    }],
+    notify_list: [{type: Schema.ObjectId, ref:'Articles', unique: true}],
+    saved_articles: [{type: Schema.ObjectId, ref:'Articles', unique: true}]
+
 });
 
 module.exports = Users;

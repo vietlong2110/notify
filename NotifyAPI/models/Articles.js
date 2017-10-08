@@ -53,12 +53,13 @@ const Articles = new Schema({
     type: String,
     es_indexed: true
   },
-  publishedDate: {
+    publishedDate: {
     type: Date,
     default: Date.now,
     es_indexed: true,
     required: true
   }
+
 });
 
 Articles.plugin(mongoosastic, config.articles);
