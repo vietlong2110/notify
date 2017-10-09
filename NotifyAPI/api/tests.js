@@ -24,4 +24,19 @@ router.get('/fblikes', async(req, res) => {
   }
 });
 
+router.get('/fbinfo', async(req, res) => {
+  try {
+    let data = await Controllers.facebook.userInfo(/*access_token*/);
+    res.json({
+      success: true,
+      data
+    })
+  } catch(err) {
+    res.json({
+      success: false,
+      error: err
+    })
+  }
+})
+
 module.exports = router;

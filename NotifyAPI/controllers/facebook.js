@@ -3,11 +3,11 @@
 *******************************************************************************/
 
 const FB = require('fb');
-const fb = new FB.Facebook({version: 'v2.9'});
+const fb = new FB.Facebook({version: 'v2.10'});
 
 const LIMIT = '100';
 //temporary access token
-const ACCESS_TOKEN = 'EAAM98EFnHGMBAJK4jSxhzpB75Gx8Nlt64PiBAaVc3e42EN6clNcPUMwANHVVlZCfva8lYZB3fnZCUuE34U6CHabjx8beCwi1x8DA5nz6GQz5hkacZBzROQVDXxC9qmpZA0rzNo9wWOuM1lGpJ4YoVXvC9NkhoZBJr5ZAFUg6i6suRlFfjLVmYxZCPLiD5vHzZB2vlm0AvSXHXggZDZD';
+const TEST_TOKEN = 'EAAM98EFnHGMBAGxaiKBH98ZAvXkrQaoZADzayhKjQGrTuS4FV55yKaL1NoZA5f8ZCfVzEZANzYWOW5IK7UwREPMqRMy5YZA3fcAE4xFwBa1ErcsdtojMkxRIPPbn3iKRqKlLFhTcZC8uXZCK2moncOCQX5HwgjLQrxHhFvkWqHT7IYuWIF3HdnEeuy8i34834vjc5omwYuvywnEzkpDFNsVB';
 
 /**
 * Filter data with only celebs' pages
@@ -50,14 +50,17 @@ const filterData = data => {
         res.following = res.following.concat({ id, name, website });
     }
   }
-  return res;
+  return {
+    data,
+    filterData: res
+  };
 };
 
 /**
 * Get user_likes fb pages
 * @return {Promise<Array>}
 */
-const getUserLikePages = async(access_token = ACCESS_TOKEN) => {
+const getUserLikePages = async(access_token = TEST_TOKEN) => {
   try {
     let response = await fb.api('me/likes', {
       access_token,
@@ -68,7 +71,7 @@ const getUserLikePages = async(access_token = ACCESS_TOKEN) => {
       return Promise.reject(response.error);
 
     let data = response.data;
-    while (response.paging.next) {
+    while (response.paging && response.paging.next) {
       try {
         response = await fb.api('me/likes?after=' + response.paging.cursors.after, {
           access_token,
@@ -84,10 +87,46 @@ const getUserLikePages = async(access_token = ACCESS_TOKEN) => {
     }
     return Promise.resolve(filterData(data));
   } catch(err) {
+    console.log(err);
+    return Promise.reject(err);
+  }
+};
+
+/**
+* Get info of fb user
+* @return {Promise<Array>}
+*/
+const userInfo = async(access_token = TEST_TOKEN) => {
+  try {
+    let response = await fb.api('/me', {
+      access_token,
+      fields: 'id,name,email'
+    });
+    // console.log(response);
+    if (response.error)
+      return Promise.reject(response.error);
+
+    let { id, name, email } = response;
+    response = await fb.api(id + '/picture?redirect=0&type=large', {
+      access_token
+    });
+    if (response.error || !(response.data) || !(response.data.url))
+      return Promise.resolve({
+        id, name, email,
+        profile_picture: null
+      });
+
+    let profile_picture = response.data.url;
+    return Promise.resolve({
+      id, name, email, profile_picture
+    })
+  } catch(err) {
+    console.log(err);
     return Promise.reject(err);
   }
 };
 
 module.exports = {
-  getUserLikePages
+  getUserLikePages,
+  userInfo
 };

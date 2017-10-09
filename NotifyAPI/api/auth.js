@@ -29,36 +29,29 @@ router.post('/fblogin', async (req, res) => {
     let user = await Models.Users.findOne({ email }).exec();
 
     if (!user) {
-      let newUser = new Models.Profile({
-        email, name, profile_picture, access_token,
-        password: require('generate-password').generate({
-          length: 32,
-          number: true
-        })
+      let newUser = new Models.Users({
+        email, name, profile_picture, access_token
       });
       await newUser.save();
 
       res.json({
         success: true,
-        token: "JWT " + jwt.encode({ id: found._id }, config.secret),
-        email,
-        name,
-        profile_picture
+        token: "JWT " + jwt.encode({ id: newUser._id }, config.secret),
+        email, name, profile_picture
       });
-    } else {
+    }
+    else {
       user.access_token = access_token;
       await user.save();
 
       res.json({
         success: true,
-        token: "JWT " + jwt.encode({ id: found._id }, config.secret),
-        email,
-        name,
-        profile_picture
+        token: "JWT " + jwt.encode({ id: user._id }, config.secret),
+        email, name, profile_picture
       });
     }
   } catch (err) {
-    res.send(500).json({
+    res.sendStatus(401).json({
       success: false,
       error: err
     });

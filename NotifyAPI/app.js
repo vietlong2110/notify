@@ -28,8 +28,8 @@ app.use(function(req, res, next) {
   next();
 });
 
-// const auth = require('./api/auth');
-// app.use('/auth', auth);
+const auth = require('./api/auth');
+app.use('/auth', auth);
 
 const api = require('./api/api')(passport); //include api router file
 app.use('/', api);
