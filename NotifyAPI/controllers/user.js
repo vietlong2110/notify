@@ -1,9 +1,8 @@
 /*******************************************************************************
  *                 CONTROLLER FUNCTIONS RELATING TO USERS                      *
  *******************************************************************************/
-const Models = require('../database')
-const Search = require('./search')
-const ObjectID = require("bson-objectid");
+const Models = require('../database');
+const Search = require('./search');
 
 const unfollowKeyword = async (user, keyword) => {
     try {

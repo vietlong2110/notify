@@ -1,8 +1,7 @@
 /*******************************************************************************
- *                 CONTROLLER FUNCTIONS RELATING TO FAVORITES                      *
- *******************************************************************************/
-const Models = require('../database')
-const ObjectID = require("bson-objectid");
+*                 CONTROLLER FUNCTIONS RELATING TO FAVORITES                   *
+*******************************************************************************/
+const Models = require('../database');
 var mongoose = require('mongoose');
 
 const saveFavorites = async (user, id) => {
@@ -61,5 +60,4 @@ module.exports = {
     saveFavorites,
     unsaveFavorites,
     getSavedFavorites
-
 };
