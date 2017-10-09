@@ -3,6 +3,7 @@
  *******************************************************************************/
 const Models = require('../database')
 const ObjectID = require("bson-objectid");
+var mongoose = require('mongoose');
 
 const saveFavorites = async (user, id) => {
     try {
@@ -11,7 +12,7 @@ const saveFavorites = async (user, id) => {
         if (article !== null) {
             let favorites = Models.Favorites({
                 user_id: user._id,
-                article: ObjectID(id),
+                article:  mongoose.Types.ObjectId(id),
                 saved_date: Date.now()
             });
             await favorites.save();
@@ -29,7 +30,7 @@ const saveFavorites = async (user, id) => {
 const unsaveFavorites = async (user, id) => {
     try {
         var message;
-        await Models.Favorites.remove({'user_id': user._id, 'article': ObjectID(id)}).exec();
+        await Models.Favorites.remove({'user_id': user._id, 'article': mongoose.Types.ObjectId(id)}).exec();
         message = "remove complete";
         return Promise.resolve(message);
     } catch (err) {
