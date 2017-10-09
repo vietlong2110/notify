@@ -88,67 +88,67 @@ const notifyList = async (user) => {
     }
 };
 
+//
+// const saveArticles = async (user, id) => {
+//     try {
+//         var message;
+//         let index = user.saved_articles.indexOf(id);
+//         if (index === -1) {
+//             user.saved_articles.push(ObjectID(id));
+//             user.save();
+//             message = "save complete";
+//         } else {
+//             message = "article already in list";
+//         }
+//         return Promise.resolve(message);
+//     }catch (err){
+//         return Promise.reject(err);
+//     }
+// };
+//
+// const unsaveArticles = async (user, id) => {
+//     try {
+//         var message;
+//         let index = user.saved_articles.indexOf(id);
+//         if (index !== -1) {
+//             user.saved_articles.splice(index, 1);
+//             user.save();
+//             message = "unsave complete";
+//         } else {
+//             message = "article not in list";
+//         }
+//         return Promise.resolve(message);
+//     }catch (err){
+//         return Promise.reject(err);
+//     }
+// };
+//
+// const getSavedArticles = async (user) => {
+//     try {
+//         let result = await Models.Users.findById(user._id).populate({
+//             path: 'saved_articles',
+//             select: ({"_id": 1, "title": 1, "image": 1, "description": 1, "source": 1, "publishedDate": 1}),
+//
+//         }).sort({
+//             publishedDate: -1
+//         }).exec();
+//
+//         let saved_articles = result.saved_articles;
+//         saved_articles.sort(function (a, b) {
+//             return b.publishedDate - a.publishedDate;
+//         })
+//         return Promise.resolve(saved_articles);
+//     } catch (err) {
+//         return Promise.reject(err);
+//     }
+//}
 
-const saveArticles = async (user, id) => {
-    try {
-        var message;
-        let index = user.saved_articles.indexOf(id);
-        if (index === -1) {
-            user.saved_articles.push(ObjectID(id));
-            user.save();
-            message = "save complete";
-        } else {
-            message = "article already in list";
-        }
-        return Promise.resolve(message);
-    }catch (err){
-        return Promise.reject(err);
-    }
-};
 
-const unsaveArticles = async (user, id) => {
-    try {
-        var message;
-        let index = user.saved_articles.indexOf(id);
-        if (index !== -1) {
-            user.saved_articles.splice(index, 1);
-            user.save();
-            message = "unsave complete";
-        } else {
-            message = "article not in list";
-        }
-        return Promise.resolve(message);
-    }catch (err){
-        return Promise.reject(err);
-    }
-};
-
-const getSavedArticles = async (user) => {
-    try {
-        let result = await Models.Users.findById(user._id).populate({
-            path: 'saved_articles',
-            select: ({"_id": 1, "title": 1, "image": 1, "description": 1, "source": 1, "publishedDate": 1}),
-
-        }).sort({
-            publishedDate: -1
-        }).exec();
-
-        let saved_articles = result.saved_articles;
-        saved_articles.sort(function (a, b) {
-            return b.publishedDate - a.publishedDate;
-        })
-        return Promise.resolve(saved_articles);
-    } catch (err) {
-        return Promise.reject(err);
-    }
-}
 
 module.exports = {
     unfollowKeyword,
     followKeyword,
-    notifyList,
-    saveArticles,
-    unsaveArticles,
-    getSavedArticles
+    notifyList
+
 
 };

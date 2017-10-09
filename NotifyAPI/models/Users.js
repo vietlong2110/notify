@@ -8,7 +8,6 @@ const Schema = mongoose.Schema;
 const Users = new Schema({
     name: String,
     email: String,
-    password: String,
     access_token: String,
     profile_picture: String,
     //roles: Array,
@@ -22,7 +21,6 @@ const Users = new Schema({
       category: String
     }],
     notify_list: [{type: Schema.ObjectId, ref:'Articles', unique: true}],
-    saved_articles: [{type: Schema.ObjectId, ref:'Articles', unique: true}]
 
 });
 

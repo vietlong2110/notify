@@ -126,9 +126,9 @@ module.exports = passport => {
     });
 
 
-    router.post('/save',isAuthorized, async(req,res)=>{
+    router.post('/save-favorite',isAuthorized, async(req,res)=>{
         try{
-            let message = await Controllers.user.saveArticles(req.user,req.query._id);
+            let message = await Controllers.favorite.saveFavorites(req.user,req.query._id);
             res.json({
                 success: true,
                 payload: message
@@ -144,9 +144,9 @@ module.exports = passport => {
     });
 
 
-    router.post('/unsave',isAuthorized, async(req,res)=>{
+    router.delete('/unsave-favorite',isAuthorized, async(req,res)=>{
         try{
-            let message = await Controllers.user.unsaveArticles(req.user,req.query._id);
+            let message = await Controllers.favorite.unsaveFavorites(req.user,req.query._id);
             res.json({
                 success: true,
                 payload: message
@@ -162,9 +162,9 @@ module.exports = passport => {
     });
 
 
-    router.get('/saved-articles',isAuthorized,async(req,res)=>{
+    router.get('/favorites',isAuthorized,async(req,res)=>{
         try{
-            let result = await Controllers.user.getSavedArticles(req.user);
+            let result = await Controllers.favorite.getSavedFavorites(req.user);
             res.json({
                 success: true,
                 payload: result
