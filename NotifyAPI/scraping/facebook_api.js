@@ -48,7 +48,7 @@ const getFanPagePosts = async (page_id = '140284136008345', access_token = TEST_
         let response = await fb.api(page_id + '/posts', {
             access_token,
             limit: LIMIT,
-            fields: 'created_time,story,message,full_picture,type,description,link'
+            fields: 'created_time,story,message,full_picture,type,description,link,attachments'
         });
 
         if (response.error)
