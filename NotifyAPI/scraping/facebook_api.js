@@ -8,8 +8,12 @@ const LIMIT = '100';
 const TEST_TOKEN = 'EAAM98EFnHGMBAGxaiKBH98ZAvXkrQaoZADzayhKjQGrTuS4FV55yKaL1NoZA5f8ZCfVzEZANzYWOW5IK7UwREPMqRMy5YZA3fcAE4xFwBa1ErcsdtojMkxRIPPbn3iKRqKlLFhTcZC8uXZCK2moncOCQX5HwgjLQrxHhFvkWqHT7IYuWIF3HdnEeuy8i34834vjc5omwYuvywnEzkpDFNsVB';
 const TEST_PAGEID = '140284136008345';
 const DEFAULT_LANG = 'vi';
-const DEFAULT_TIMEOUT = 10000;
+const DEFAULT_TIMEOUT = 20000;
 const { Articles } = require('../database');
+
+const timeout = (ms = DEFAULT_TIMEOUT) => {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const getUserLikePage = async (access_token = TEST_TOKEN) => {
     try {
@@ -123,12 +127,12 @@ const saveArticle = async (data, language = DEFAULT_LANG) => {
 
 const fetchFbFanpage = async (access_token = TEST_TOKEN, language = DEFAULT_LANG) => {
     let user_liked_pages = await getUserLikePage(access_token);
-    console.log(user_liked_pages);
+    // console.log(user_liked_pages);
     for (let i=0; i< user_liked_pages.length; i++) {
         console.log("fetching "+user_liked_pages[i]);
         try {
             let page_posts = await getFanPagePosts(user_liked_pages[i].id, access_token);
-            console.log(page_posts);
+            await timeout();
             for (let j=0; j<page_posts.length; j++) {
                 try {
                     let {link, created_time, id, message, story, full_picture} = page_posts[j]; 
@@ -143,7 +147,6 @@ const fetchFbFanpage = async (access_token = TEST_TOKEN, language = DEFAULT_LANG
             console.log(err);
         }
     }
-
 }
 
 fetchFbFanpage();
