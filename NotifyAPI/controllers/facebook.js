@@ -13,7 +13,7 @@ const TEST_TOKEN = 'EAAM98EFnHGMBAGxaiKBH98ZAvXkrQaoZADzayhKjQGrTuS4FV55yKaL1NoZ
 * Filter data with only celebs' pages
 * @return {Array} - Filtered data
 */
-const filterData = data => {
+const filterData = (data, filter) => {
   const NEWS_MEDIA_CATEGORIES = [
     'Media/News Company', 'News & Media Website', 'Magazine', 'Newspaper',
     'Broadcasting & Media Production Company'
@@ -23,37 +23,16 @@ const filterData = data => {
     'Artist', 'Athlete', 'Sports Team'
   ];
 
-  let res = {
-    sources: [],
-    following: []
-  };
+  let res = [];
 
-  for (i in data) {
-    let { id, name, category, category_list, website } = data[i];
-    if (category_list) {
-      let list = category_list;
-      for (j in list) {
-        if (NEWS_MEDIA_CATEGORIES.indexOf(list[j].name) !== -1) {
-          res.sources = res.sources.concat({ id, name, website });
-          break;
-        }
-        if (CELEBRITIES_CATEGORIES.indexOf(list[j].name) !== -1) {
-          res.following = res.following.concat({ id, name, website });
-          break;
-        }
-      }
-    }
-    else {
-      if (NEWS_MEDIA_CATEGORIES.indexOf(category) !== -1)
-        res.sources = res.sources.concat({ id, name, website });
-      if (CELEBRITIES_CATEGORIES.indexOf(category) !== -1)
-        res.following = res.following.concat({ id, name, website });
-    }
+  for (i = 0; i < data.length; i++) {
+    let { id, name, category, website } = data[i];
+    if (filter === 'sources' && NEWS_MEDIA_CATEGORIES.indexOf(category) !== -1)
+      res = res.concat({ id, name, website, category });
+    if (filter === 'following' && CELEBRITIES_CATEGORIES.indexOf(category) !== -1)
+      res = res.concat({ id, name, website, category });
   }
-  return {
-    data,
-    filterData: res
-  };
+  return res;
 };
 
 /**
@@ -76,16 +55,16 @@ const getUserLikePages = async(access_token = TEST_TOKEN) => {
         response = await fb.api('me/likes?after=' + response.paging.cursors.after, {
           access_token,
           limit: LIMIT,
-          fields: 'name,category,category_list,website'
+          fields: 'name,category,website'
         });
         if (response.error) //return the beginning part of the data
-          return Promise.resolve(filterData(data));
+          return Promise.resolve(data);
         data = data.concat(response.data);
       } catch(err) {
-        return Promise.resolve(filterData(data));
+        return Promise.resolve(data);
       }
     }
-    return Promise.resolve(filterData(data));
+    return Promise.resolve(data);
   } catch(err) {
     console.log(err);
     return Promise.reject(err);
@@ -128,5 +107,6 @@ const userInfo = async(access_token = TEST_TOKEN) => {
 
 module.exports = {
   getUserLikePages,
-  userInfo
+  userInfo,
+  filterData
 };

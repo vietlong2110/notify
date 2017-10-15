@@ -25,7 +25,8 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
                         publishedDate: articles[i].publishedDate,
                         title: articles[i].title,
                         tags: articles[i].tags,
-
+                        content: articles[i].content,
+                        video: articles[i].video
                     }
                 });
                 console.log(result);
@@ -34,4 +35,4 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
             }
         }
 }
-indexingMongoToElastic();
+indexingMongoToElastic("zing","articles");

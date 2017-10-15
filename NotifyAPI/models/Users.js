@@ -14,7 +14,7 @@ const Users = new Schema({
     locales: String,
     keyword_list: [String],
     //categories_liked: Array,
-    user_liked: [{
+    user_likes: [{
       id: String,
       name: String,
       website: String,
