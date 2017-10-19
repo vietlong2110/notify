@@ -105,6 +105,13 @@ articles.createMapping({
                 //     }
                 //   }
                 // },
+                "suggest":{
+                    "type": "completion",
+                    "analyzer": "vi_analyzer",
+                    "preserve_position_increments": false,
+                    "preserve_separators": false,
+                    "payloads" : true
+                },
                 "link": {
                     "type": "text",
                     "index": "no"
@@ -124,7 +131,6 @@ articles.createMapping({
     if (err)
         console.log('error creating mapping (you can safely ignore this)');
 });
-articles.synchronize();
 
 module.exports = {
     Feeds: feeds,
