@@ -9,9 +9,8 @@ const router = express.Router();
 const Controllers = require('../controllers');
 const Models = require('../database');
 
-module.exports = passport => {
-  const isAuthorized = passport.authenticate('jwt', {session: false});
-
+module.exports = (passport,io) => {
+  const isAuthorized = passport.authenticate('jwt', { session: false });
   /**
    * Search API
    * @param {req} REQUEST QUERY FORMAT: ?q=...&size=
@@ -91,7 +90,7 @@ module.exports = passport => {
   });
 
 
-  router.get('/getlist', isAuthorized, async(req, res) => {
+  router.get('/getlist', isAuthorized, async (req, res) => {
     try {
       let listKeyword = req.user.keyword_list;
       res.json({
@@ -106,14 +105,14 @@ module.exports = passport => {
     }
   });
 
-  router.get('/newfeed', isAuthorized, async(req, res) => {
+  router.get('/newfeed', isAuthorized, async (req, res) => {
     try {
       let newfeed = await Controllers.user.notifyList(req.user);
       res.json({
         success: true,
         payload: newfeed
       });
-    } catch (error){
+    } catch (error) {
       res.status(400).json({
         success: false,
         err: error
@@ -122,14 +121,14 @@ module.exports = passport => {
   });
 
 
-  router.post('/favorite', isAuthorized, async(req, res) => {
+  router.post('/favorite', isAuthorized, async (req, res) => {
     try {
-      let message = await Controllers.favorite.saveFavorites(req.user,req.query._id);
+      let message = await Controllers.favorite.saveFavorites(req.user, req.query._id);
       res.json({
         success: true,
         payload: message
       });
-    } catch (error){
+    } catch (error) {
       res.status(400).json({
         success: false,
         err: error
@@ -140,14 +139,14 @@ module.exports = passport => {
   });
 
 
-  router.delete('/favorite', isAuthorized, async(req, res) => {
+  router.delete('/favorite', isAuthorized, async (req, res) => {
     try {
-      let message = await Controllers.favorite.unsaveFavorites(req.user,req.query._id);
+      let message = await Controllers.favorite.unsaveFavorites(req.user, req.query._id);
       res.json({
         success: true,
         payload: message
       });
-    } catch (error){
+    } catch (error) {
       res.status(400).json({
         success: false,
         err: error
@@ -158,20 +157,39 @@ module.exports = passport => {
   });
 
 
-  router.get('/favorites', isAuthorized, async(req, res) => {
+  router.get('/favorites', isAuthorized, async (req, res) => {
     try {
       let result = await Controllers.favorite.getSavedFavorites(req.user);
       res.json({
         success: true,
         payload: result
       });
-    } catch (error){
+    } catch (error) {
       res.status(400).json({
         success: false,
         err: error
       });
     }
   });
+
+  router.get('/notify', isAuthorized, async (req, res) => {
+    try {
+      let newfeed = await Controllers.user.notifyList(req.user);
+      io.emit('notify', {
+        success: true,
+        payload: newfeed[0]
+      })
+      // res.json({
+      //   success: true,
+      //   payload: newfeed
+      // });
+    } catch (error) {
+      res.status(400).json({
+        success: false,
+        err: error
+      })
+    }
+  })
 
   return router;
 };

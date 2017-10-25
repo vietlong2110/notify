@@ -23,7 +23,7 @@ const unfollowKeyword = async (user, keyword) => {
 
 const followKeyword = async (user, keyword) => {
     try {
-
+        console.log(keyword);
         let index = user.keyword_list.indexOf(keyword);
         if (index === -1) {
 
