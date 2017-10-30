@@ -43,7 +43,7 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
                             "analyzer": "vi_analyzer"
 
                         },
-                        "suggest":{
+                        "suggest": {
                             "type": "completion",
                             "analyzer": "vi_analyzer",
                             "preserve_position_increments": false,
@@ -78,25 +78,31 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
     let articles = await Models.Articles.find({}).exec();
     for (let i = 0; i < articles.length; i++) {
         try {
-
-            let result = await client.index({
+            let articleById = await client.get({
                 index: index,
                 type: type,
-                id: articles[i]._id.toString(),
-                body: {
-                    image: articles[i].image,
-                    link: articles[i].link,
-                    description: articles[i].description,
-                    source: articles[i].source,
-                    publishedDate: articles[i].publishedDate,
-                    title: articles[i].title,
-                    tags: articles[i].tags,
-                    content: articles[i].content,
-                    video: articles[i].video
-                }
+                id: articles[i]._id.toString()
             });
+            if (articleById === null) {
+                let result = await client.index({
+                    index: index,
+                    type: type,
+                    id: articles[i]._id.toString(),
+                    body: {
+                        image: articles[i].image,
+                        link: articles[i].link,
+                        description: articles[i].description,
+                        source: articles[i].source,
+                        publishedDate: articles[i].publishedDate,
+                        title: articles[i].title,
+                        tags: articles[i].tags,
+                        content: articles[i].content,
+                        video: articles[i].video
+                    }
+                });
 
-            console.log(result);
+                console.log(result);
+            }
         } catch (err) {
             console.log(err);
             console.log(articles[i]);

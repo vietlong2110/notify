@@ -108,7 +108,7 @@ module.exports = passport => {
 
     router.get('/newfeed', isAuthorized, async (req, res) => {
         try {
-            let newfeed = await Controllers.user.notifyList(req.user);
+            let newfeed = await Controllers.user.notifyList(req.user,req.query.size,req.query.offset);
             res.json({
                 success: true,
                 payload: newfeed
