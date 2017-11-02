@@ -41,7 +41,7 @@ const followKeyword = async (user, keyword) => {
 };
 const groupByTime = async (date) => {
     try {
-        var now = new Date('2017,09,24');
+        var now = new Date(Date.now());
         var yesterday = new Date(now.getTime()-86400*1000);
         if(date.toLocaleDateString()===now.toLocaleDateString()){
             return Promise.resolve("recent");
