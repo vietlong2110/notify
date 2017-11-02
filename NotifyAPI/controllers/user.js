@@ -3,7 +3,6 @@
  *******************************************************************************/
 const Models = require('../database');
 const Search = require('./search');
-var moment = require('moment');
 const DEFAULT_SIZE = 20; //return 20 articles by default
 const DEFAULT_OFFSET = 0; //return 20 articles by default
 
@@ -42,26 +41,34 @@ const followKeyword = async (user, keyword) => {
 };
 const groupByTime = async (date) => {
     try {
-        var time = moment(date, "DD/MM/YYYY");
-        var now = moment().format();
-        var yesterday = moment().subtract(1, 'days').startOf('day').toString();
-        if (time.isSame(now,'day')) {
+        var now = new Date('2017,09,24');
+        var yesterday = new Date(now.getTime()-86400*1000);
+        if(date.toLocaleDateString()===now.toLocaleDateString()){
             return Promise.resolve("recent");
         }
-        else if (time.isSame(yesterday,'day')) {
+        else if(date.toLocaleDateString()===yesterday.toLocaleDateString()){
+            return Promise.resolve("yesterday");
+        }
+        else{
+            return Promise.resolve(date.toLocaleDateString());
+        }
+
+        /*var time = moment(date, "DD/MM/YYYY");
+        var now = moment().format();
+        var yesterday = moment().subtract(1, 'days').startOf('day').toString();
+        if (time.isSame(now, 'day')) {
+            return Promise.resolve("recent");
+        }
+        else if (time.isSame(yesterday, 'day')) {
             return Promise.resolve("yesterday");
         }
         else {
             return Promise.resolve(time.format(time._f));
-        }
+        }*/
     } catch (err) {
         return Promise.reject(err)
     }
-}
-const getByGroupTime = async(payloads,group)=>{
-
-    return Promise.resolve(-1);
-}
+};
 const connectArticleFromUser = async (user, size, offset) => {
 
     try {
@@ -88,18 +95,18 @@ const connectArticleFromUser = async (user, size, offset) => {
             });
             let group = await groupByTime(sub_notify_list[j].publishedDate);
             var pivot = -1;
-            for(let i = 0; i<payloads.length; i++){
-                if(payloads[i]['group']===group){
+            for (let i = 0; i < payloads.length; i++) {
+                if (payloads[i]['group'] === group) {
                     pivot = i;
                     break;
                 }
             }
 
-            if(pivot===-1){
-                payload['group']=group;
+            if (pivot === -1) {
+                payload['group'] = group;
                 payload['articles'].push(sub_notify_list[j]);
                 payloads.push(payload);
-            }else {
+            } else {
                 payloads[pivot]['articles'].push(sub_notify_list[j]);
             }
 
