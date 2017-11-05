@@ -66,11 +66,12 @@ const notifyList = async (user) => {
         var article_list = [];
         for (let i = 0; i < user.keyword_list.length; i++) {
             var results = await Search.searchArticles(user.keyword_list[i]);
-
+            user.number_new_notifications = 0;
             try {
                 await results.forEach(function (result) {
                     if (user.notify_list.indexOf(result._id) === -1) {
                         user.notify_list.push(result._id);
+                        user.number_new_notifications++;
                     }
                 })
 

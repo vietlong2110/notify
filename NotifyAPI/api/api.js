@@ -108,6 +108,7 @@ module.exports = (passport,io) => {
   router.get('/newfeed', isAuthorized, async (req, res) => {
     try {
       let newfeed = await Controllers.user.notifyList(req.user);
+      // console.log
       res.json({
         success: true,
         payload: newfeed
@@ -152,8 +153,6 @@ module.exports = (passport,io) => {
         err: error
       });
     }
-
-
   });
 
 
@@ -172,17 +171,17 @@ module.exports = (passport,io) => {
     }
   });
 
-  router.get('/notify', isAuthorized, async (req, res) => {
+  router.get('/notify', async (req, res) => {
     try {
-      let newfeed = await Controllers.user.notifyList(req.user);
+      // let newfeed = await Controllers.user.notifyList(req.user);
       io.emit('notify', {
         success: true,
-        payload: newfeed[0]
+        payload: 'xin chao'//newfeed[0]
       })
-      // res.json({
-      //   success: true,
-      //   payload: newfeed
-      // });
+      res.json({
+        success: true,
+        payload: newfeed
+      });
     } catch (error) {
       res.status(400).json({
         success: false,
@@ -191,5 +190,9 @@ module.exports = (passport,io) => {
     }
   })
 
+  router.get('/hello', isAuthorized, (req, res) => {
+    console.log(req.user);
+    res.json(req.user);
+  })
   return router;
 };

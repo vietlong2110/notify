@@ -9,6 +9,9 @@ const passport = require('passport');
 const io = require('socket.io').listen();
 io.on("connection", (socket) => {
   console.log("a user conneccted");
+  socket.on('tan',(data) => {
+    console.log(data);
+  });
 })
 //parser body
 app.use(
