@@ -8,6 +8,7 @@ const client = new elastic.Client({
 });
 
 const DEFAULT_SIZE = 20; //return 20 articles by default
+const DEFAULT_INDEX = "articles"; //return 20 articles by default
 
 /**
  * Get articles by keyword query
@@ -20,7 +21,7 @@ const searchArticles = async (query, size = DEFAULT_SIZE) => {
     // if (query.match(/^[.\p{L}]*$/i)) {
     try {
         let results = await client.search({
-            index: 'articles',
+            index: DEFAULT_INDEX,
             size,
             body: {
                 query: {
@@ -139,6 +140,38 @@ const searchArticles = async (query, size = DEFAULT_SIZE) => {
     // }
 };
 
+const searchSuggester = async (query, size = DEFAULT_SIZE) => {
+    try{
+        let result=await client.suggest({
+            ignoreUnavailable: true,
+            allowNoIndices: false,
+            index: DEFAULT_INDEX,
+            body: {
+                suggest: {
+                    text: query,
+                    completion: {
+                        field: "suggest",
+                        size: size
+                    }
+                }
+            }
+        });
+        console.log(result.suggest[0].options);
+
+        let suggesters = [];
+        let i = 0;
+        while (suggesters.length<6 && i<size){
+            if(suggesters.indexOf(result.suggest[0].options[i].text)===-1)
+                suggesters.push(result.suggest[0].options[i].text);
+            i++;
+        }
+        return Promise.resolve(suggesters);
+    }catch (err){
+        return Promise.reject(err);
+    }
+
+};
 module.exports = {
-    searchArticles
+    searchArticles,
+    searchSuggester
 };

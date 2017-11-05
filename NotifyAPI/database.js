@@ -4,7 +4,7 @@
 
 const mongoose = require('mongoose');
 
-const {Feeds, Sources, Articles, Users, Favorites} = require('./models');
+const {Feeds, Sources, Articles, Users, Favorites,Keywords} = require('./models');
 
 let hostname = process.env.NODE_ENV === 'production' ||
 process.env.NODE_ENV === 'development' ? 'mongo' : 'localhost';
@@ -17,7 +17,7 @@ if (readyState !== 1 || readyState !== 2)
 let feeds = mongoose.model('Feed', Feeds);
 let sources = mongoose.model('Source', Sources);
 let users = mongoose.model('User', Users);
-
+let keywords = mongoose.model('Keyword',Keywords);
 let articles = mongoose.model('Articles', Articles);
 let favorites = mongoose.model('Favorites', Favorites);
 //mapping types of articles index in elasticsearch
@@ -105,6 +105,13 @@ articles.createMapping({
                 //     }
                 //   }
                 // },
+                "suggest":{
+                    "type": "completion",
+                    "analyzer": "vi_analyzer",
+                    "preserve_position_increments": false,
+                    "preserve_separators": false,
+                    "payloads" : true
+                },
                 "link": {
                     "type": "text",
                     "index": "no"
@@ -124,12 +131,12 @@ articles.createMapping({
     if (err)
         console.log('error creating mapping (you can safely ignore this)');
 });
-articles.synchronize();
 
 module.exports = {
     Feeds: feeds,
     Sources: sources,
     Articles: articles,
     Users: users,
-    Favorites: favorites
+    Favorites: favorites,
+    Keywords: keywords
 };
