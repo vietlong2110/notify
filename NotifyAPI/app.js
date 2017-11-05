@@ -6,11 +6,18 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const Controllers = require('./controllers');
 const io = require('socket.io').listen();
 io.on("connection", (socket) => {
   console.log("a user conneccted");
-  socket.on('tan',(data) => {
-    console.log(data);
+  socket.on('client_send_user',  (data) => {
+    setInterval( async () => {
+      let number_notifications = await Controllers.user.getNumberNotify(data);
+      // console.log(number_notifications);
+      if(number_notifications != 0) {
+        socket.emit("new_noti", number_notifications);
+      } 
+    }, 10000);
   });
 })
 //parser body

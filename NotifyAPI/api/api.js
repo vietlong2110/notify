@@ -204,7 +204,7 @@ module.exports = passport => {
     });
     router.get('/notify', async (req, res) => {
       try {
-        // let newfeed = await Controllers.user.notifyList(req.user);
+        let number_notifications = await Controllers.user.number_notifications(req.user);
         io.emit('notify', {
           success: true,
           payload: 'xin chao'//newfeed[0]
