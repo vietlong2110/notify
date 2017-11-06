@@ -1,7 +1,9 @@
-import { loginFacebook, logout, checkAuth } from './auth';
+import auth from './auth';
+import alert from './alert';
+import parse from './parse';
 
 module.exports = {
-  loginFacebook,
-  logout,
-  checkAuth
+  ...auth,
+  ...alert,
+  ...parse
 };

@@ -1,7 +1,6 @@
-export const REQUEST_FACEBOOK_ACCESS_TOKEN = 'REQUEST_FACEBOOK_ACCESS_TOKEN';
-export const RECEIVE_SERVER_DATA = 'RECEIVE_SERVER_DATA';
-export const ERROR_AUTH = 'ERROR_AUTH';
-export const LOGGING_OUT = 'LOGGING_OUT';
-export const SET_AUTH_STATE = 'SET_AUTH_STATE';
-export const LOAD_AUTH_STATE = 'LOAD_AUTH_STATE';
-export const DELETE_ALL_STATES = 'DELETE_ALL_STATES';
+export const RECEIVE_USER_DATA = 'RECEIVE_USER_DATA';
+export const ERROR_ALERT = 'ERROR_ALERT';
+export const MESSAGE_ALERT = 'MESSAGE_ALERT';
+export const END_ALERT = 'END_ALERT';
+export const LOGOUT = 'LOGOUT';
+export const LOGIN = 'LOGIN';

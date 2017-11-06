@@ -1,11 +1,25 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
+import styled from 'styled-components/native';
+import { Alert } from 'react-native';
 import { SocialIcon } from 'react-native-elements';
 
+const Container = styled.View`
+  flex: 1;
+  backgroundColor: #fff;
+  justifyContent: center;
+`;
+
 class LoginScreen extends React.Component {
+  onAlert() {
+    Alert.alert('error', this.props.error, [{
+      text: 'OK',
+      onPress: () => this.props.endAlert()
+    }]);
+  }
+
   render() {
     return(
-      <View style={styles.container}>
+      <Container>
         <SocialIcon
           title='Sign In With Facebook'
           button
@@ -18,26 +32,26 @@ class LoginScreen extends React.Component {
             }
           }}
         />
-      </View>
+        {
+          // this.props.error && this.onAlert()
+        }
+      </Container>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    justifyContent: 'center'
-  }
-});
-
 //--------------------------------------------------------------------------------------------------------------------------------------
 import { connect } from 'react-redux';
 
-import { loginFacebook } from '../actions';
+import { loginFacebook, endAlert } from '../actions';
 
-const mapDispatchToProps = dispatch => ({
-  login: () => dispatch(loginFacebook())
+const select = state => ({
+  error: state.alert.error
 });
 
-export default connect(null, mapDispatchToProps)(LoginScreen);
+const action = dispatch => ({
+  login: () => dispatch(loginFacebook()),
+  endAlert: () => dispatch(endAlert())
+});
+
+export default connect(select, action)(LoginScreen);

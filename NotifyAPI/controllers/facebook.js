@@ -26,11 +26,11 @@ const filterData = (data, filter) => {
   let res = [];
 
   for (i = 0; i < data.length; i++) {
-    let { id, name, category, website } = data[i];
+    let { name, category } = data[i];
     if (filter === 'sources' && NEWS_MEDIA_CATEGORIES.indexOf(category) !== -1)
-      res = res.concat({ id, name, website, category });
+      res = res.concat(name);
     if (filter === 'following' && CELEBRITIES_CATEGORIES.indexOf(category) !== -1)
-      res = res.concat({ id, name, website, category });
+      res = res.concat(name);
   }
   return res;
 };
