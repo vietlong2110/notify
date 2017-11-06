@@ -21,7 +21,7 @@ const Users = new Schema({
       category: String
     }],
     notify_list: [{type: Schema.ObjectId, ref:'Articles', unique: true}],
-
+    number_new_notifications: Number
 });
 
 module.exports = Users;

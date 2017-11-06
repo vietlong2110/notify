@@ -202,6 +202,28 @@ module.exports = passport => {
             });
         }
     });
-
+    router.get('/notify', async (req, res) => {
+      try {
+        let number_notifications = await Controllers.user.number_notifications(req.user);
+        io.emit('notify', {
+          success: true,
+          payload: 'xin chao'//newfeed[0]
+        })
+        res.json({
+          success: true,
+          payload: newfeed
+        });
+      } catch (error) {
+        res.status(400).json({
+          success: false,
+          err: error
+        })
+      }
+    })
+  
+    router.get('/hello', isAuthorized, (req, res) => {
+      console.log(req.user);
+      res.json(req.user);
+    })
     return router;
 };
