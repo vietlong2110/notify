@@ -1,44 +1,61 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { List, ListItem } from 'react-native-elements';
+import styled from 'styled-components/native';
+import { Alert } from 'react-native';
 
-const list = [
-  {
-    source: 'thanhnien.vn',
-    image: 'http://image.thanhnien.vn/Uploaded/trantuananh/2017_09_22/screenshot2017-09-22at72827pm_PXAQ.jpg?width=500',
-    title: 'Vòng 19 V.League: Đánh bại Hải Phòng, Quảng Nam dẫn đầu bảng xếp hạng',
-    description: 'Lại chính là Đinh Thanh Trung ghi bàn quyết định giúp Quảng Nam giành chiến thắng, đồng thời đội bóng của HLV Hoàng Văn Phúc vươn lên dẫn đầu BXH.',
-    publishedDate: '2017-09-22T12:32:29Z'
-  }
-];
+import FeedCard from './FeedCard';
+
+const Container = styled.View`
+  flex: 1;
+  backgroundColor: #fff;
+  alignItems: center;
+  justifyContent: center;
+`;
+
+const Button = styled.Button``;
+
+const Text = styled.Text``;
 
 class NotifyScreen extends React.Component {
+  onAlert(message) {
+    Alert.alert('Sign out', message, [{
+      text: 'Cancel',
+      onPress: () => this.props.dispatch(endAlert())
+    }, {
+      text: 'Ok',
+      onPress: () => {
+        this.props.dispatch(endAlert());
+        this.props.dispatch(logout());
+        this.props.navigation.navigate('Login', {});
+      }
+    }]);
+  }
+
   render() {
+    const { data, message } = this.props;
     return (
-      <View style={styles.container}>
-        {/* <Text>Notify Tab</Text> */}
-        <List>
-          {
-            list.map((l, i) => (
-              <ListItem
-                roundAvatar
-                avatar={{uri:l.image}}
-                key={i}
-                title={l.title}
-                subtitle={l.description}
-              />
-            ))
-          }
-        </List>
-      </View>
+      <Container>
+        <FeedCard />
+        {/* <Text>{data.email}</Text>
+        <Button
+          title='Sign Out'
+          onPress={ () => this.props.dispatch(messageAlert('Are you sure you want to log out?')) }
+        /> */}
+        {
+          // message && this.onAlert(message)
+        }
+      </Container>
     );
   }
 }
 
-const styles = {
-  container: {
-    flex: 1
-  }
-}
+//--------------------------------------------------------------------------------------------------------------------------------------
+import { connect } from 'react-redux';
 
-export default NotifyScreen;
+import { messageAlert, endAlert, logout } from '../actions';
+
+const select = state => ({
+  data: state.user.data,
+  message: state.alert.message
+});
+
+export default connect(select)(NotifyScreen);

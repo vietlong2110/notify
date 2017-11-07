@@ -9,11 +9,11 @@ const DEFAULT_OFFSET = 0; //return 20 articles by default
 
 const unfollowKeyword = async (user, keyword) => {
     try {
-
+        
         let index = user.keyword_list.indexOf(keyword);
         if (index !== -1) {
             user.keyword_list.splice(index, 1);
-            user.save();
+            await user.save();
             return Promise.resolve("unfollow complete");
         }
         return Promise.resolve("keyword not already in list")
@@ -23,15 +23,13 @@ const unfollowKeyword = async (user, keyword) => {
     }
 }
 
-
 const followKeyword = async (user, keyword) => {
     try {
-
+        // console.log(keyword);
         let index = user.keyword_list.indexOf(keyword);
         if (index === -1) {
-
             user.keyword_list.push(keyword);
-            user.save();
+            await user.save();
             return Promise.resolve("follow complete");
         }
         return Promise.resolve("keyword already in list")
@@ -39,20 +37,20 @@ const followKeyword = async (user, keyword) => {
         return Promise.reject(err);
     }
 };
+
 const groupByTime = async (date) => {
     try {
         var now = new Date(Date.now());
-        var yesterday = new Date(now.getTime()-86400*1000);
-        if(date.toLocaleDateString()===now.toLocaleDateString()){
+        var yesterday = new Date(now.getTime() - 86400 * 1000);
+        if (date.toLocaleDateString() === now.toLocaleDateString()) {
             return Promise.resolve("recent");
         }
-        else if(date.toLocaleDateString()===yesterday.toLocaleDateString()){
+        else if (date.toLocaleDateString() === yesterday.toLocaleDateString()) {
             return Promise.resolve("yesterday");
         }
-        else{
+        else {
             return Promise.resolve(date.toLocaleDateString());
         }
-
         /*var time = moment(date, "DD/MM/YYYY");
         var now = moment().format();
         var yesterday = moment().subtract(1, 'days').startOf('day').toString();
@@ -75,7 +73,7 @@ const connectArticleFromUser = async (user, size, offset) => {
 
         let result = await Models.Users.findById(user._id).populate({
             path: 'notify_list',
-            select: ({"_id": 1, "title": 1, "image": 1, "description": 1, "source": 1, "publishedDate": 1}),
+            select: ({ "_id": 1, "title": 1, "image": 1, "description": 1, "source": 1, "publishedDate": 1 }),
 
         }).sort({
             publishedDate: -1
@@ -143,11 +141,34 @@ const notifyList = async (user, size = DEFAULT_SIZE, offset = DEFAULT_OFFSET) =>
     }
 };
 
+const getNumberNotify = async (user, size = DEFAULT_SIZE, offset = DEFAULT_OFFSET) => {
+
+    try {
+        size = Number(size);
+        offset = Number(offset);
+        var article_list = [];
+        var number_notify = 0;
+        for (let i = 0; i < user.keyword_list.length; i++) {
+            var results = await Search.searchArticles(user.keyword_list[i]);
+            for (let j = 0; j < results.length; j++) {
+                if (user.notify_list.indexOf(results[j]._id) === -1) {
+                    user.notify_list.push(results[j]._id);
+                    number_notify++;
+                }
+            }
+
+            // await user.save();
+        }
+        // let articles = await connectArticleFromUser(user, size, offset);
+        return Promise.resolve(number_notify);
+    } catch (err) {
+        return Promise.reject(err);
+    }
+};
 
 module.exports = {
     unfollowKeyword,
     followKeyword,
-    notifyList
-
-
+    notifyList,
+    getNumberNotify
 };

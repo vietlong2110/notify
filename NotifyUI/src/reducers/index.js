@@ -1,16 +1,9 @@
 import { combineReducers } from 'redux';
 
-import { authenticated } from './auth';
-import { DELETE_ALL_STATES } from '../actions/actionTypes';
+import { user } from './user';
+import { alert } from './alert';
 
-const appReducer = combineReducers({
-  authenticated
+export default combineReducers({
+  user,
+  alert
 });
-
-const rootReducer = (state, action) => {
-  if (action.type === DELETE_ALL_STATES)
-    state = undefined;
-  return appReducer(state, action);
-};
-
-export default rootReducer;

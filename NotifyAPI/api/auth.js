@@ -26,24 +26,25 @@ router.post('/fblogin', async (req, res) => {
   try {
     let info = await Controllers.facebook.userInfo(access_token);
     let user_likes = await Controllers.facebook.getUserLikePages(access_token);
+    let sources = Controllers.facebook.filterData(user_likes, 'sources');
+    let following = Controllers.facebook.filterData(user_likes, 'following');
+
     let { email, name, profile_picture } = info;
-    // console.log(user_likes);
     let user = await Models.Users.findOne({ email }).exec();
 
     if (!user) {
       let newUser = new Models.Users({
-        email, name, profile_picture, access_token, user_likes
+        email, name, profile_picture, access_token, user_likes,
+        keyword_list: following
       });
       user = await newUser.save();
     }
     else {
       user.access_token = access_token;
       user.user_likes = user_likes;
+      user.keyword_list = following;
       await user.save();
     }
-
-    let sources = Controllers.facebook.filterData(user_likes, 'sources');
-    let following = Controllers.facebook.filterData(user_likes, 'following');
     
     res.json({
       success: true,

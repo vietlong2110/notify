@@ -1,70 +1,46 @@
 import React from 'react';
-import { View, Button, ActivityIndicator, StyleSheet } from 'react-native';
-// import { Button } from 'react-native-elements';
-import { StackNavigator, TabNavigator } from 'react-navigation';
+import styled from 'styled-components/native';
+import { StackNavigator } from 'react-navigation';
 
-import { LoginScreen, TestScreen, NotifyScreen, SaveScreen } from './components';
+import { LoginScreen, TestScreen } from './components';
 
-const TabComponents = TabNavigator({
-  Notify: { screen: NotifyScreen },
-  Save: { screen: SaveScreen }
-}, {
-  tabBarPosition: 'bottom',
-  animationEnabled: true
-});
-
-const SettingsComponents = () => (
-  <Button title='Settings'/>
-);
-
-const AddComponents = () => (
-  <Button title='Add' />
-);
+const Container = styled.View`
+  flex: 1;
+`;
 
 const rootNavigator = isAuthenticated => StackNavigator({
-  Login: { screen: LoginScreen },
-  Main: {
-    screen: TabComponents
+  Login: {
+    screen: LoginScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: null
+    })
   },
-  Test: { screen: TestScreen }
+  Test: {
+    screen: TestScreen,
+    navigationOptions: ({ navigation }) => ({
+      header: null
+    })
+  }
 }, {
-  mode: 'modal',
   initialRouteName: isAuthenticated ? 'Test' : 'Login'
 });
 
 class AppComponents extends React.Component {
-  componentWillMount() {
-    this.props.setAuthLayout()
-  }
-
   render() {
     const Layout = rootNavigator(this.props.isAuthenticated);
     return (
-      <View style={styles.container}>
-        {this.props.isPending ? <ActivityIndicator size='large' /> : <Layout />}
-      </View>
+      <Container>
+        <Layout />
+      </Container>
     );
   }
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1
-  }
-});
-
 //--------------------------------------------------------------------------------------------------------------------------------------
 import { connect } from 'react-redux';
 
-import { checkAuth } from './actions';
-
-const mapStateToProps = state => {
-  const { isAuthenticated, isPending } = state.authenticated;
-  return { isAuthenticated, isPending };
-};
-
-const mapDispatchToProps = dispatch => ({
-  setAuthLayout: () => dispatch(checkAuth())
+const select = state => ({
+  isAuthenticated: state.user.isAuthenticated
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AppComponents);
+export default connect(select)(AppComponents);
