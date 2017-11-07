@@ -5,10 +5,10 @@ import FeedCardHeader from './FeedCardHeader';
 
 const Root = styled.View`
   minHeight: 180;
-  backgroundColor: ${props => props.theme.WHITE};
+  backgroundColor: #fff;
   width: 100%;
   padding: 7px;
-  shadowColor: ${props => props.theme.SECONDARY};
+  shadowColor: #444B52;
   shadowOffset: 0px 2px;
   shadowRadius: 2;
   shadowOpacity: 0.1;
@@ -24,7 +24,7 @@ const CardContentText = styled.Text`
   fontSize: 14;
   textAlign: left;
   fontWeight: 500;
-  color: ${props => props.theme.SECONDARY};
+  color: #444B52;
 `;
 
 const text = 'Hello I am Long. I come from Hanoi, Vietnam. This is just a long sentence to test';

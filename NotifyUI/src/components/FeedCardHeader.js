@@ -46,13 +46,13 @@ const MetaBottomContainer = styled.View`
 const MetaFullName = styled.Text`
   fontSize: 16;
   fontWeight: bold;
-  color: ${props => props.theme.SECONDARY};
+  color: #444B52;
 `;
 
 const MetaText = styled.Text`
   fontSize: 14;
   fontWeight: 600;
-  color: ${props => props.theme.LIGHT_GRAY};
+  color: #CAD0D6;
 `;
 
 const FeedCardHeader = () => (

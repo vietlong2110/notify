@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components/native';
 import { Alert } from 'react-native';
 
-import { FeedCard } from './FeedCard';
+import FeedCard from './FeedCard';
 
 const Container = styled.View`
   flex: 1;
