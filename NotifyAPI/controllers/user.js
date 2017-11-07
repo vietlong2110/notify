@@ -8,33 +8,34 @@ const DEFAULT_OFFSET = 0; //return 20 articles by default
 
 
 const unfollowKeyword = async (user, keyword) => {
-    let index = user.keyword_list.indexOf(keyword);
-
-    if (index !== -1) {
-        user.keyword_list.splice(index, 1);
-        try {
+    try {
+        
+        let index = user.keyword_list.indexOf(keyword);
+        if (index !== -1) {
+            user.keyword_list.splice(index, 1);
             await user.save();
             return Promise.resolve("unfollow complete");
-        } catch (err) {
-            return Promise.reject(err);
         }
+        return Promise.resolve("keyword not already in list")
+
+    } catch (err) {
+        return Promise.reject(err);
     }
-    return Promise.resolve("keyword not already in list");
 }
 
 const followKeyword = async (user, keyword) => {
-    let index = user.keyword_list.indexOf(keyword);
-
-    if (index === -1) {
-        user.keyword_list.push(keyword);
-        try {
+    try {
+        // console.log(keyword);
+        let index = user.keyword_list.indexOf(keyword);
+        if (index === -1) {
+            user.keyword_list.push(keyword);
             await user.save();
             return Promise.resolve("follow complete");
-        } catch (err) {
-            return Promise.reject(err);
         }
+        return Promise.resolve("keyword already in list")
+    } catch (err) {
+        return Promise.reject(err);
     }
-    return Promise.resolve("keyword already in list");
 };
 
 const groupByTime = async (date) => {
@@ -138,14 +139,36 @@ const notifyList = async (user, size = DEFAULT_SIZE, offset = DEFAULT_OFFSET) =>
     } catch (err) {
         return Promise.reject(err);
     }
-    let articles = await connectArticleFromUser(user);
-
-    return Promise.resolve(articles);
 };
 
+const getNumberNotify = async (user, size = DEFAULT_SIZE, offset = DEFAULT_OFFSET) => {
+
+    try {
+        size = Number(size);
+        offset = Number(offset);
+        var article_list = [];
+        var number_notify = 0;
+        for (let i = 0; i < user.keyword_list.length; i++) {
+            var results = await Search.searchArticles(user.keyword_list[i]);
+            for (let j = 0; j < results.length; j++) {
+                if (user.notify_list.indexOf(results[j]._id) === -1) {
+                    user.notify_list.push(results[j]._id);
+                    number_notify++;
+                }
+            }
+
+            // await user.save();
+        }
+        // let articles = await connectArticleFromUser(user, size, offset);
+        return Promise.resolve(number_notify);
+    } catch (err) {
+        return Promise.reject(err);
+    }
+};
 
 module.exports = {
     unfollowKeyword,
     followKeyword,
-    notifyList
+    notifyList,
+    getNumberNotify
 };
