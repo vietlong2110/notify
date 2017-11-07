@@ -78,12 +78,12 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
     let articles = await Models.Articles.find({}).exec();
     for (let i = 0; i < articles.length; i++) {
         try {
-            let articleById = await client.get({
+            let articleById = await client.exists({
                 index: index,
                 type: type,
                 id: articles[i]._id.toString()
             });
-            if (articleById === null) {
+            if (articleById === false) {
                 let result = await client.index({
                     index: index,
                     type: type,
