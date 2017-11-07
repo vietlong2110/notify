@@ -43,6 +43,16 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
                             "analyzer": "vi_analyzer"
 
                         },
+                        "title": {
+                            "type": "text",
+                            "analyzer": "vi_analyzer"
+
+                        },
+                        "description": {
+                            "type": "text",
+                            "analyzer": "vi_analyzer"
+
+                        },
                         "suggest": {
                             "type": "completion",
                             "analyzer": "vi_analyzer",
