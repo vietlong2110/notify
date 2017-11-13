@@ -16,65 +16,67 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
     try {
         var payload = {
             "settings": {
+
                 "number_of_shards": 1,
                 "analysis": {
+                    "filter": {
+                        "shingles_filter": {
+                            "type": "shingle",
+                            "min_shingle_size": 2,
+                            "max_shingle_size": 3,
+                            "output_unigrams": false
+                        }
+                    },
                     "analyzer": {
-                        "vn_non_diacritic": {
-                            "type": "vi_analyzer",
-                            "filter": ["icu_folding"]
+                        "vn_analysis": {
+                            "type": "custom",
+                            "tokenizer": "vi_tokenizer",
+                            "filter": ["icu_folding", "shingles_filter"]
                         }
 
                     }
                 }
             },
+
             "mappings": {
                 "articles": {
-                    "_all": {
-                        "enabled": false
-                    },
-                    "_source": {
-                        "excludes": [
-                            "content"
-                        ]
-                    },
                     "properties": {
                         "content": {
                             "type": "text",
-                            "analyzer": "vi_analyzer"
+                            "analyzer": "vn_analysis",
+                            "fielddata": true
 
                         },
                         "title": {
                             "type": "text",
-                            "analyzer": "vi_analyzer"
+                            "analyzer": "vn_analysis",
+                            "fielddata": true
+
 
                         },
                         "description": {
                             "type": "text",
-                            "analyzer": "vi_analyzer"
+                            "analyzer": "vn_analysis",
+                            "fielddata": true
 
                         },
-                        "suggest": {
-                            "type": "completion",
-                            "analyzer": "vi_analyzer",
-                            "preserve_position_increments": false,
-                            "preserve_separators": false,
-                        },
+                        "tags": {
+                            "type": "text",
+                            "analyzer": "vn_analysis",
+                            "fields": {
+                                "raw": {
+                                    "type": "string",
+                                    "index": "not_analyzed"
 
-                        "link": {
-                            "type": "text",
-                            "index": "not_analyzed"
-                        },
-                        "image": {
-                            "type": "text",
-                            "index": "no"
-                        },
-                        "lang": {
-                            "type": "text",
-                            "index": "no"
+                                }
+                            }
                         }
                     }
                 }
+
             }
+
+
         };
         var params = {
             "index": index,
@@ -93,7 +95,37 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
                 type: type,
                 id: articles[i]._id.toString()
             });
+            //make tags
             if (articleById === false) {
+
+                var analyzeResults;
+                try {
+                    let text = articles[i].title + " " + articles[i].description + " " + articles[i].content;
+                    analyzeResults = await client.indices.analyze({
+                        index: index,
+                        body: {
+                            analyzer: 'vi_analyzer',
+                            text: text.toString()
+                        }
+                    });
+                } catch (errAnalyze) {
+                    console.log(errAnalyze);
+                    let text = articles[i].title + " " + articles[i].description;
+                    analyzeResults = await client.indices.analyze({
+                        index: index,
+                        body: {
+                            analyzer: 'vi_analyzer',
+                            text: text.toString()
+                        }
+                    });
+                }
+                for (let j = 0; j < analyzeResults.tokens.length; j++) {
+                    if ((analyzeResults.tokens[j].type === "name2") && (articles[i].tags.indexOf(analyzeResults['tokens'][j]['token']) === -1)) {
+                        articles[i].tags.push(analyzeResults.tokens[j].token);
+                        console.log(analyzeResults.tokens[j].token);
+                    }
+                }
+
                 let result = await client.index({
                     index: index,
                     type: type,
