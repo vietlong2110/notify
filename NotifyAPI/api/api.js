@@ -219,11 +219,6 @@ module.exports = passport => {
           err: error
         })
       }
-    })
-  
-    router.get('/hello', isAuthorized, (req, res) => {
-      console.log(req.user);
-      res.json(req.user);
-    })
+    });
     return router;
 };

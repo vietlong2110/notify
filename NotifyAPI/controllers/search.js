@@ -29,7 +29,7 @@ const searchArticles = async (query, size = DEFAULT_SIZE) => {
                         query,
                         type: 'cross_fields',
                         fields: ['title^10', 'description^5', 'content'],
-                        analyzer: 'vi_analyzer',
+                        analyzer: 'vn_analysis',
                         minimum_should_match: '67%'
                     }
                 }
