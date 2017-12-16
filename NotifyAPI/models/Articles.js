@@ -45,7 +45,11 @@ const Articles = new Schema({
     type: Date,
     default: Date.now,
     required: true
-  }
+  },
+    flag:{
+      type: Boolean,
+      default: false
+    }
 
 });
 

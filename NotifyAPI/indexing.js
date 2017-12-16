@@ -6,7 +6,10 @@
 
 const { fetchNews } = require('./scraping/news');
 const { Sources } = require('./database');
-
+const elastic = require('elasticsearch');
+const client = new elastic.Client({
+  host: process.env.NODE_ENV === 'production' ? 'elasticsearch' : 'localhost:9200'
+});
 let cache = [];
 
 // const printSources = async() => {
@@ -25,9 +28,93 @@ let cache = [];
 //   })
 // };
 
+const mappingElastic = async() => {
+  try {
+    var payload = {
+      "settings": {
+
+        "number_of_shards": 1,
+        "analysis": {
+          "filter": {
+            "shingles_filter": {
+              "type": "shingle",
+              "min_shingle_size": 2,
+              "max_shingle_size": 3,
+              "filler_token": ""
+            }
+          },
+          "analyzer": {
+            "vn_analysis": {
+              "type": "custom",
+              "tokenizer": "vi_tokenizer",
+              "filter": ["icu_folding", "shingles_filter"]
+            },
+            "vn_query": {
+              "type": "custom",
+              "tokenizer": "standard",
+              "filter": ["icu_folding", "shingles_filter"]
+            }
+          }
+        }
+      },
+
+      "mappings": {
+        "articles": {
+          "properties": {
+            "content": {
+              "type": "text",
+              "analyzer": "vn_analysis"
+            },
+            "title": {
+              "type": "text",
+              "analyzer": "vn_analysis"
+
+
+            },
+            "description": {
+              "type": "text",
+              "analyzer": "vn_analysis"
+
+            },
+            "tags": {
+              "type": "text",
+              "analyzer": "vn_analysis",
+              "fields": {
+                "raw": {
+                  "type": "string",
+                  "index": "not_analyzed"
+
+                }
+              }
+            }
+          }
+        }
+
+      }
+
+
+    };
+    var params = {
+      "index": "articles",
+      "body": payload
+    }
+    let resultCreate = await client.indices.create(params);
+    console.log(resultCreate);
+  }catch (e){
+    console.log(e);
+  }
+}
+
+
 const initialize = async() => {
+  //come to make mapping
+  await mappingElastic();
+
   const sourceSeed = require('./seeds/source.json');
   console.log('Checking exist seed data for indexing...');
+
+
+
   for (i in sourceSeed) {
     try {
       let s = await Sources.findOne({ source: sourceSeed[i].source }).exec();

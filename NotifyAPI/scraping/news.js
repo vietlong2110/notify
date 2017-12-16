@@ -29,7 +29,7 @@ const fetchFeed = async(rss = RSS) => {
     }
     return Promise.resolve(data);
   } catch(err) {
-    // console.log(err);
+    // console.log(err);d
     return Promise.reject(err);
   }
 };
@@ -57,10 +57,11 @@ const extractContent = async(link, language = DEFAULT_LANG, title = '', content 
 };
 
 const saveArticle = async(data, language = DEFAULT_LANG) => {
-  let { link, publishedDate, content, title, image, tags, description, source } = data;
+  let  flag = false;
+    let { link, publishedDate, content, title, image, tags, description, source} = data;
   try {
     let newArticle = new Articles({
-      link, publishedDate, content, title, image, tags, description, language, source
+      link, publishedDate, content, title, image, tags, description, language, source, flag
     });
     await newArticle.save();
     console.log('Indexed ' + link);
@@ -71,8 +72,7 @@ const saveArticle = async(data, language = DEFAULT_LANG) => {
   }
 };
 
-const fetchNews = async(rss, language = DEFAULT_LANG, source = '') => {
-  // const { Articles } = require('../database');
+    // const { Articles } = require('../database');
 
   try {
     console.log('FETCHING ' + rss + ' in ' + source + '\n');
