@@ -12,15 +12,14 @@ function sleep(ms = 0) {
 
 const removeSymbols = body => {
     let s = body.toString();
-    s = s.replace(/[\n\r]+/g,' ');
-    s = s.replace(/[\*\^\+\?\\\.\[\]\^\$\|\{\)\(\}\'\"\~!\/@£$%&=`´“”‘’;><:,]+/g,'');
-    s = s.replace(/\s\s+/g,' ');
+    s = s.replace(/[\n\r]+/g, ' ');
+    s = s.replace(/[\*\^\+\?\\\.\[\]\^\$\|\{\)\(\}\'\"\~!\/@£$%&=`´“”‘’;><:,]+/g, '');
+    s = s.replace(/\s\s+/g, ' ');
     // console.log(s);
     return s;
 };
 
 const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE) => {
-
     try {
         var payload = {
             "settings": {
@@ -37,14 +36,14 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
                     },
                     "analyzer": {
                         "vn_analysis": {
-                            "type": "custom",
-                            "tokenizer": "vi_tokenizer",
-                            "filter": ["icu_folding", "shingles_filter"]
+                            "type": "custom"
+                            // "tokenizer": "vi_tokenizer",
+                            // "filter": ["icu_folding", "shingles_filter"]
                         },
                         "vn_query": {
                             "type": "custom",
-                            "tokenizer": "standard",
-                            "filter": ["icu_folding", "shingles_filter"]
+                            "tokenizer": "standard"
+                            // "filter": ["icu_folding", "shingles_filter"]
                         }
                     }
                 }
@@ -54,18 +53,18 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
                 "articles": {
                     "properties": {
                         "content": {
-                            "type": "text",
-                            "analyzer": "vn_analysis"
+                            "type": "text"
+                            // "analyzer": "vn_analysis"
                         },
                         "title": {
-                            "type": "text",
-                            "analyzer": "vn_analysis"
+                            "type": "text"
+                            // "analyzer": "vn_analysis"
 
 
                         },
                         "description": {
-                            "type": "text",
-                            "analyzer": "vn_analysis"
+                            "type": "text"
+                            // "analyzer": "vn_analysis"
 
                         },
                         "tags": {
@@ -97,64 +96,77 @@ const indexingMongoToElastic = async (index = DEFAULT_INDEX, type = DEFAULT_TYPE
     }
     let k = 0;
     let total = await Models.Articles.count({});
-    while (k < total) {
-        let articles = await Models.Articles.find({}).limit(100).skip(k).exec();
-        k += 100;
-        for (let i = 0; i < articles.length; i++) {
-            try {
-                let articleById = await client.exists({
-                    index: index,
-                    type: type,
-                    id: articles[i]._id.toString()
-                });
-                //make tags
-                if (articleById === false) {
-                    let description = removeSymbols(articles[i].description);
-                    let title = removeSymbols(articles[i].title);
-                    let content = removeSymbols(articles[i].content);
+    // while (k < total) {
+        index_100 = async (index=DEFAULT_INDEX, type=DEFAULT_TYPE) => {
+            let articles = await Models.Articles.find({}).limit(100).skip(k).exec();
+            k += 100;
+            if(k<total) {
+                console.log("total = " + total)
+                console.log("k= " + k)
+                process.nextTick(index_100)
+            }
+            for (let i = 0; i < articles.length; i++) {
+                try {
+                    let articleById = await client.exists({
+                        index: index,
+                        type: type,
+                        id: articles[i]._id.toString()
+                    });
+                    //make tags
+                    if (articleById === false) {
+                        let description = removeSymbols(articles[i].description);
+                        let title = removeSymbols(articles[i].title);
+                        let content = removeSymbols(articles[i].content);
 
-                    try {
-                        let text = title + " " + description + " " + content;
-                        let analyzeResults = await client.indices.analyze({
-                            index: index,
-                            body: {
-                                analyzer: 'vi_analyzer',
-                                text: text.toString()
+                        try {
+                            let text = title + " " + description + " " + content;
+                            let analyzeResults = await client.indices.analyze({
+                                index: index,
+                                body: {
+                                    // analyzer: 'vi_analyzer',
+                                    text: text.toString()
+                                }
+                            });
+                            // console.log("end analyzer")
+                            for (let j = 0; j < analyzeResults.tokens.length; j++) {
+                                if ((analyzeResults.tokens[j].type === "name2") && (articles[i].tags.indexOf(analyzeResults['tokens'][j]['token']) === -1)) {
+                                    articles[i].tags.push(analyzeResults.tokens[j].token);
+                                    console.log(analyzeResults.tokens[j].token);
+                                }
                             }
-                        });
-                        for (let j = 0; j < analyzeResults.tokens.length; j++) {
-                            if ((analyzeResults.tokens[j].type === "name2") && (articles[i].tags.indexOf(analyzeResults['tokens'][j]['token']) === -1)) {
-                                articles[i].tags.push(analyzeResults.tokens[j].token);
-                                console.log(analyzeResults.tokens[j].token);
-                            }
+                            
+                            // console.log(k)
+                            let result = await client.index({
+                                index: index,
+                                type: type,
+                                id: articles[i]._id.toString(),
+                                body: {
+                                    image: articles[i].image,
+                                    link: articles[i].link,
+                                    description, title, content,
+                                    source: articles[i].source,
+                                    publishedDate: articles[i].publishedDate,
+                                    tags: articles[i].tags,
+                                    video: articles[i].video
+                                }
+                            });
+                            // console.log("end index")
+                            console.log(result)
+                            // console.log(k)
+                            // return k
+                        } catch (errAnalyze) {
+                            console.log(errAnalyze);
                         }
-    
-                        let result = await client.index({
-                            index: index,
-                            type: type,
-                            id: articles[i]._id.toString(),
-                            body: {
-                                image: articles[i].image,
-                                link: articles[i].link,
-                                description, title, content,
-                                source: articles[i].source,
-                                publishedDate: articles[i].publishedDate,
-                                tags: articles[i].tags,
-                                video: articles[i].video
-                            }
-                        });
-        
-                        console.log(result);
-                    } catch (errAnalyze) {
-                        console.log(errAnalyze);
                     }
+                } catch (err) {
+                    console.log(err);
+                    console.log(articles[i]);
                 }
-            } catch (err) {
-                console.log(err);
-                console.log(articles[i]);
             }
         }
-    }
+        index_100()
+        // console.log(k)
+    // }
 }
 indexingMongoToElastic();
 
